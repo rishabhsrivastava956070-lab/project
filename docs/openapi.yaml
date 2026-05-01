@@ -1,0 +1,191 @@
+openapi: 3.0.3
+info:
+  title: Backend Developer Intern Assignment API
+  version: 1.0.0
+  description: REST API with JWT authentication, role-based access, and task CRUD.
+servers:
+  - url: http://localhost:5000/api/v1
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterInput:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+          example: Riya Sharma
+        email:
+          type: string
+          example: riya@example.com
+        password:
+          type: string
+          example: Password@123
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: admin@example.com
+        password:
+          type: string
+          example: Admin@12345
+    TaskInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          example: Build assignment API
+        description:
+          type: string
+          example: Complete auth, CRUD, docs, and UI.
+        status:
+          type: string
+          enum: [TODO, IN_PROGRESS, DONE]
+          example: TODO
+        dueDate:
+          type: string
+          format: date-time
+          example: "2026-05-05T10:00:00.000Z"
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registration successful
+        "409":
+          description: Email is already registered
+  /auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Login and receive a JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Invalid credentials
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user profile
+        "401":
+          description: Missing or invalid token
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [TODO, IN_PROGRESS, DONE]
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Paginated task list. Admin sees all tasks; users see their own.
+    post:
+      tags: [Tasks]
+      summary: Create a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Task created
+  /tasks/{id}:
+    get:
+      tags: [Tasks]
+      summary: Get a task by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Task found
+        "404":
+          description: Task not found
+    patch:
+      tags: [Tasks]
+      summary: Update a task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "200":
+          description: Task updated
+    delete:
+      tags: [Tasks]
+      summary: Delete a task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Task deleted
+  /users:
+    get:
+      tags: [Users]
+      summary: List users, admin only
+      responses:
+        "200":
+          description: User list
+        "403":
+          description: Admin role required

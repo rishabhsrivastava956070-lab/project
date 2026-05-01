@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task API Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Backend Intern Assignment</p>
+          <h1>Task API Dashboard</h1>
+        </div>
+        <a href="/api-docs" target="_blank" rel="noreferrer">Swagger Docs</a>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="login">Login</button>
+            <button class="tab" data-tab="register">Register</button>
+          </div>
+
+          <form id="loginForm" class="form">
+            <label>Email<input name="email" type="email" value="admin@example.com" required /></label>
+            <label>Password<input name="password" type="password" value="Admin@12345" required /></label>
+            <button type="submit">Login</button>
+          </form>
+
+          <form id="registerForm" class="form hidden">
+            <label>Name<input name="name" type="text" placeholder="Your name" required /></label>
+            <label>Email<input name="email" type="email" placeholder="you@example.com" required /></label>
+            <label>Password<input name="password" type="password" placeholder="Minimum 8 characters" required /></label>
+            <button type="submit">Create Account</button>
+          </form>
+
+          <div class="session">
+            <p id="userText">Not logged in</p>
+            <button id="logoutBtn" class="secondary" type="button">Logout</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Create Task</h2>
+          <form id="taskForm" class="form">
+            <input name="id" type="hidden" />
+            <label>Title<input name="title" type="text" placeholder="Task title" required /></label>
+            <label>Description<textarea name="description" placeholder="Short description"></textarea></label>
+            <label>Status
+              <select name="status">
+                <option value="TODO">TODO</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="DONE">DONE</option>
+              </select>
+            </label>
+            <button type="submit">Save Task</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="list-head">
+          <h2>Tasks</h2>
+          <button id="refreshBtn" class="secondary" type="button">Refresh</button>
+        </div>
+        <div id="message" class="message"></div>
+        <div id="tasks" class="tasks"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
